@@ -1,0 +1,63 @@
+[
+  {
+    "patchDescription": "Add precise controls when holding down B"
+  },
+  {
+    "type": "prom",
+    "description": "Precise controls for P1",
+    "address": "1016",
+    "subroutine": true,
+    "patchAsm": [
+      "move.b $10fd96, D0 ; load BIOS_P1CURRENT into D0",
+
+      ";;;; check to see if B is down, if so, enter precise mode",
+      "btst #5, D0 ; first, is B pressed?",
+      "beq done ; if not, nothing more to do",
+
+      "andi.b #$fb, D0 ; wipe out left if it is set",
+      "andi.b #$f7, D0 ; wipe out right if it is set",
+      "move.b $10fd97, D6 ; load BIOS_P1CHANGE into D6",
+      "btst #2, D6 ; was left just pressed?",
+      "beq checkRight ; no? then check right",
+      "ori.b #4, D0 ; left was just pressed, so set it into D0 where the game expects it",
+      "bra done",
+
+      "checkRight:",
+      "btst #3, D6 ; was right just pressed?",
+      "beq done ; not pressed? nothing to do",
+      "ori.b #8, D0 ; right was just pressed, so set it into D0 where the game expects it",
+
+      "done:",
+      "rts"
+    ]
+  },
+  {
+    "type": "prom",
+    "description": "Precise controls for P2",
+    "address": "1032",
+    "subroutine": true,
+    "patchAsm": [
+      "move.b $10fd9c, D0 ; load BIOS_P2CURRENT into D0",
+
+      ";;;; check to see if B is down, if so, enter precise mode",
+      "btst #5, D0 ; first, is B pressed?",
+      "beq done ; if not, nothing more to do",
+
+      "andi.b #$fb, D0 ; wipe out left if it is set",
+      "andi.b #$f7, D0 ; wipe out right if it is set",
+      "move.b $10fd9d, D6 ; load BIOS_P2CHANGE into D6",
+      "btst #2, D6 ; was left just pressed?",
+      "beq checkRight ; no? then check right",
+      "ori.b #4, D0 ; left was just pressed, so set it into D0 where the game expects it",
+      "bra done",
+
+      "checkRight:",
+      "btst #3, D6 ; was right just pressed?",
+      "beq done ; not pressed? nothing to do",
+      "ori.b #8, D0 ; right was just pressed, so set it into D0 where the game expects it",
+
+      "done:",
+      "rts"
+    ]
+  }
+]
